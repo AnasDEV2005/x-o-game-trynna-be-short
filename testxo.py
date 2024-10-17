@@ -1,19 +1,59 @@
 def show_table(game):
-    print('\n'.join([' '.join(map(str, game[i:i+3])) for i in range(0, 9, 3)]))
+    s=''
+    for i in range(len(game)):
+        s+=str(game[i])+'  '
+        if len(s)==9: 
+            print(s)
+            s=''
 
-def check_winner(game, player):
-    channels = [[0,1,2], [3,4,5], [6,7,8], [0,3,6], [1,4,7], [2,5,8], [0,4,8], [2,4,6]]
-    return any(all(game[i] == player for i in ch) for ch in channels)
+def check_winner(game):
+    combins = [[0,1,2], [3,4,5], [6,7,8], [0,3,6], [1,4,7], [2,5,8], [0,4,8], [2,4,6]]
+    x=0
+    o=0
+    X=[]
+    O=[]
+    for i in range(len(game)):
+        if game[i]=='X':
+            X.append(i)
+        if game[i]=='O':
+            O.append(i)
+            
+    for i in range(8):
+        for j in combins[i]:
+            if j in X: x+=1
+            if j in O: o+=1
+        if x==3: return('Xwin')
+        if o==3: return('Owin')
+        x=0
+        o=0
 
-def play():
-    game = list(range(9))
-    for turn in range(9):
+def play(game):
+    print('new game')
+    win=False
+
+    while win==False:
         show_table(game)
-        player = 'X' if turn % 2 == 0 else 'O'
-        move = int(input(f"{player}'s move (0-8): "))
-        if game[move] in 'XO': print("Invalid move, try again!"); continue
-        game[move] = player
-        if check_winner(game, player): show_table(game); print(f"{player} wins!"); return
-    show_table(game); print("It's a tie!")
+        X = int(input('Where will you put X?_ '))
+        game[X]='X'
+        show_table(game)
 
-play()
+        if check_winner(game)=='Xwin': 
+            print('X has won'),
+            win=True
+            play([0,1,2,3,4,5,6,7,8])
+
+        O = int(input('Where will you put O?_ '))
+        game[O]='O'
+        show_table(game)
+
+        if check_winner(game)=='Owin': 
+            print('O has won')
+            win=True
+            play([0,1,2,3,4,5,6,7,8])
+        print('next round')            
+    play([0,1,2,3,4,5,6,7,8])
+   
+play([0,1,2,3,4,5,6,7,8])
+
+# meth
+# tried to make something short and easy to read with less conditionals
